@@ -1,6 +1,7 @@
 version: "3"
 
 services:
+
   crypto-trading:
     image: edeng23/binance-trade-bot
     container_name: binance_trader
@@ -14,6 +15,9 @@ services:
     command: python -m binance_trade_bot
     environment:
       - PYTHONUNBUFFERED=1
+#    network_mode: "service:vpn"
+#    depends_on:
+#      - vpn
 
   api:
     image: edeng23/binance-trade-bot
@@ -28,6 +32,9 @@ services:
     command: gunicorn binance_trade_bot.api_server:app -k eventlet -w 1 --threads 1 -b 0.0.0.0:5123
     depends_on:
       - crypto-trading
+#    network_mode: "service:vpn"
+#    depends_on:
+#      - vpn
 
   sqlitebrowser:
     image: ghcr.io/linuxserver/sqlitebrowser
@@ -41,3 +48,38 @@ services:
       - ./data:/data
     ports:
       - 3000:3000
+#    network_mode: "service:vpn"
+#    depends_on:
+#      - vpn
+
+#  # Taken from
+#  # https://github.com/Joentje/nordvpn-proxy/blob/dcc8d7f6dba126d220f4c830a7f1a783c08b69fa/docker-compose.yml
+#  vpn:
+#    image: jeroenslot/nordvpn-proxy:latest
+#    cap_add:
+#      - NET_ADMIN
+#    devices:
+#      - /dev/net/tun
+#    dns:
+#      - 1.1.1.1
+#      - 1.0.0.1
+#      #- 103.86.96.100
+#      #- 103.86.99.100
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - ovpn-data:/app/ovpn/config
+#    environment:
+#      - "USERNAME=${NORDVPN_USERNAME}"
+#      - "PASSWORD=${NORDVPN_PASSWORD}"
+#      - "LOCAL_NETWORK=${NORDVPN_LOCAL_NETWORK}"
+#      - "SERVER=${NORDVPN_SERVER}"
+#    networks:
+#      - default
+#    ports:
+#      - 8118:8118
+#    restart: always
+#    env_file:
+#      - ./nordvpn.env
+#
+#volumes:
+#  ovpn-data:

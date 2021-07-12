@@ -12,3 +12,7 @@ venv/
 crypto_trading.db
 apprise.yml
 .DS_Store
+*.env
+.envrc
+.gitsecret/keys/random_seed
+!*.secret
